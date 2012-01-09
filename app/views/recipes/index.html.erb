@@ -1,0 +1,46 @@
+<h1>Listing recipes</h1>
+
+<table>
+  <tr>
+    <th>Image</th>
+    <th>Title</th>
+    <th>Url</th>
+    <th>Dateadded</th>
+    <th>Addedby</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @recipes.each do |recipe| %>
+  <tr>
+    <td>
+		<img src="<%= recipe.image %>" width="200" height="150"/>
+	</td>
+    <td><%= recipe.title %></td>
+    <td>
+		<a href="<%= recipe.url %>"><%= recipe.url %></a>
+	</td>
+    <td><%= recipe.dateAdded %></td>
+    <td><%= recipe.addedBy %></td>
+    <td><%= link_to 'Show', recipe %></td>
+    <td><%= link_to 'Edit', edit_recipe_path(recipe) %></td>
+    <td><%= link_to 'Destroy', recipe, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<form accept-charset="UTF-8" action="/recipes" class="new_recipe" id="new_recipe" method="post">
+  </div>
+  <div class="field">
+    <label for="recipe_url">Enter the URL for a new recipe here:</label><br />
+    <input id="recipe_url" name="recipe[url]" size="130" type="text" />
+  </div>
+  <div class="actions">
+    <input name="commit" type="submit" value="Add Recipe" />
+  </div>
+</form>
+
+<br />
+
+<%= link_to 'New Recipe', new_recipe_path %>
