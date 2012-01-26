@@ -34,7 +34,7 @@
   </div>
   <div class="field">
     <label for="recipe_url">Enter the URL for a new recipe here:</label><br />
-    <input id="recipe_url" name="recipe[url]" size="130" type="text" />
+    <input id="recipe_url" name="recipe[url]" size="130" type="text" value="http://smittenkitchen.com/2012/01/apple-sharlotka/" />
   </div>
   <div class="actions">
     <input name="commit" type="submit" value="Add Recipe" />
@@ -53,19 +53,64 @@ onclick="getTitle('http://smittenkitchen.com/2012/01/apple-sharlotka/')">Display
 <button type="button" 
 onclick="getTitle('abc')">Get Title</button>
 
+<button type="button" 
+onclick="getAll()">Get All</button>
+
 
 <script type="text/javascript">
+
+var recipeTitle="unknown";
+
+function getAll(){
+	getTitle();
+	console.log("getAll()..." + recipeTitle);
+}
 
 function getTitle(){
 	var url = document.getElementById('recipe_url').value;
 	var yql_url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22" + encodeURIComponent(url) + "%22%20and%0A%20%20%20%20%20%20xpath%3D'%2F%2Ftitle'&format=json&callback=?";
 
-	$.getJSON(yql_url, function(json) {
+	$.getJSON(yql_url, getTitleCallback);
+}
+
+function getTitleCallback(json)
+{
+	console.log("getTitleCallback...");
 	  if (json && json.query && json.query.results && json.query.results.title) {
-		$('#page_title').html(json.query.results.title);
-		document.getElementById("demo").innerHTML  = json.query.results.title;
+		console.log("Returning title...");
+		recipeTitle = json.query.results.title;
 	  }
-	});
+	  else{
+		console.log("Title not found.");
+		recipeTitle = "Please enter title";
+	  }
+	  getPictures();
+}
+
+function getPictures(){
+	console.log("getPictures()...");
+	var url = document.getElementById('recipe_url').value;
+	var yql_url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22" + encodeURIComponent(url) + "%22%20and%0A%20%20%20%20%20%20xpath%3D'%2F%2Ftitle'&format=json&callback=?";
+	$.getJSON(yql_url, getPicturesCallback);
+}
+
+function getPicturesCallback(json){
+	console.log("getPicturesCallback()...");
+	 if (json && json.query && json.query.results) {
+		console.log("Returning headers...");
+		
+	  }
+	  else{
+		console.log("Headers not found.");
+		
+	  }
+	  assembleScrapedItems();
+	
+}
+
+function assembleScrapedItems(){
+	console.log("Assembling scraped items");
+	document.getElementById("demo").innerHTML  = recipeTitle;
 }
 
 function doAjax1(url){
