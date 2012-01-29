@@ -43,7 +43,9 @@
 
 <br />
 
+<img id="recipeImage" src=""/>
 <p id="demo">Preview recipe here...</p>
+
 <br/>
 
 
@@ -60,6 +62,7 @@ onclick="getAll()">Get All</button>
 <script type="text/javascript">
 
 var recipeTitle="unknown";
+var recipePicture="";
 
 function getAll(){
 	getTitle();
@@ -90,7 +93,7 @@ function getTitleCallback(json)
 function getPictures(){
 	console.log("getPictures()...");
 	var url = document.getElementById('recipe_url').value;
-	var yql_url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22" + encodeURIComponent(url) + "%22%20and%0A%20%20%20%20%20%20xpath%3D'%2F%2Ftitle'&format=json&callback=?";
+	var yql_url = "http://query.yahooapis.com/v1/public/yql?q=select%20src%20from%20html%20where%20url%3D%22" + encodeURIComponent(url) + "%22%20and%0A%20%20%20%20%20%20xpath%3D'%2F%2Fa%20%7C%20%2F%2Fimg'&format=json&callback=?";
 	$.getJSON(yql_url, getPicturesCallback);
 }
 
@@ -98,7 +101,8 @@ function getPicturesCallback(json){
 	console.log("getPicturesCallback()...");
 	 if (json && json.query && json.query.results) {
 		console.log("Returning headers...");
-		
+		console.log("..." + json.query.results.img[2].src);
+		findBestPicture(json.query.results.img);
 	  }
 	  else{
 		console.log("Headers not found.");
@@ -108,9 +112,56 @@ function getPicturesCallback(json){
 	
 }
 
+function findBestPicture(image){
+	console.log("Finding best picture for: " + recipeTitle);
+	
+	//Remove non-letters and numbers from the title.
+	var regexNonAlpha = /[\W|_]/g;
+	var cleanTitle = recipeTitle.replace(regexNonAlpha, " ").toLowerCase();
+	
+	//Put each word of the title into an array.  Avoid multiple spaces.
+	var titleElements = cleanTitle.split(/ +/g);
+	
+	//Loop through the json array of picture links.
+	var bestCandidateIndex  = 0;  //Default to the first image returned.
+	var bestCandidateScore = 0;
+	for(i in image)
+	{
+		//How many words from the title can be found in the image?
+		var currentImage = image[i].src.toLowerCase();
+		
+		//Extract the filename, remove the full path.
+		var regexFileNameOnly = /(.*)[\/\\]([^\/\\]+\.\w+)$/;
+		var currentFileName = currentImage.match(regexFileNameOnly)[2];
+		
+		console.log("Examining: " + i + " " + image[36].src + " " + currentFileName);
+		var score = 0;
+		for(j in titleElements)
+		{
+			var currentElement = titleElements[j];
+			var elementFoundAt = currentFileName.indexOf(currentElement, 0);
+			if(elementFoundAt >= 0)
+			{
+				score++;
+			}
+		}
+		
+		//Better score?
+		if(score > bestCandidateScore)
+		{
+			bestCandidateScore = score;
+			bestCandidateIndex = i;
+		}
+	}
+	
+	console.log("Best candidate index: " + bestCandidateIndex + ". Score: " + bestCandidateScore);
+	recipePicture = image[bestCandidateIndex].src;
+}
+
 function assembleScrapedItems(){
 	console.log("Assembling scraped items");
-	document.getElementById("demo").innerHTML  = recipeTitle;
+	document.getElementById("recipeImage").src  = recipePicture;
+	//document.getElementById("demo").innerHTML  = recipeTitle;
 }
 
 function doAjax1(url){
