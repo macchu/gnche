@@ -1,5 +1,23 @@
 <h1>Listing recipes</h1>
 
+<button type="button" onclick="showAddRecipeDiv()">Add Recipe</button> 
+<input id="newRecipeURL" name="newRecipeURL" type="url" value="Add Recipe" />
+
+<div class="add_recipe">
+	<img id="newRecipePicture" src=""/>
+	<label id="newRecipeTitle"></label>
+	<%= form_tag do %>
+		<div class="field">
+			<input id="recipe_url" name="recipe[url]" type="text"/>
+			<input id="recipe_title" name="recipe[title]" type="text"/>
+			<input id="recipe_image" name="recipe[image]" type="text"/>
+		</div>
+		<div class="actions">
+			<input name="commit" type="submit" value="Finish" />
+		</div>
+	<% end %>
+</div>
+
 <table>
   <tr>
     <th>Image</th>
@@ -34,7 +52,16 @@
   </div>
   <div class="field">
     <label for="recipe_url">Enter the URL for a new recipe here:</label><br />
-    <input id="recipe_url" name="recipe[url]" size="130" type="text" value="http://smittenkitchen.com/2012/01/apple-sharlotka/" />
+	<select id="recipe_url1" name="recipe">
+		<option value="http://www.epicurious.com/recipes/food/views/Truffled-Toast-with-Radicchio-and-Egg-236003">Epicurious</option>
+		<option value="http://thepioneerwoman.com/cooking/2012/01/spicy-stewed-beef-with-creamy-cheddar-grits/">Pioneer Woman</option>
+		<option value="http://www.seriouseats.com/2012/01/the-food-lab-how-to-make-best-buffalo-wings-fry-again-ultimate-crispy-deep-fried-buffalo-wings.html?ref=carousel">Serious Eats</option>
+		<option value="http://simplyrecipes.com/recipes/sweet_and_spicy_mushroom_stir_fry/">Simply Recipes</option>
+		<option value="http://www.101cookbooks.com/archives/toasted-four-grain-cereal-recipe.html">101 Cookbooks</option>
+		<option value="http://smittenkitchen.com/2012/01/potato-chip-cookies/">Smitten Kitchen</option>
+		<option value="http://www.thekitchn.com/recipe-for-a-crowd-big-game-day-barbacoa-165301">Kitchn</option>
+		<option value="http://www.foodnetwork.com/recipes/mustard-roasted-salmon-recipe/index.html">Food Network</option>
+	</select>
   </div>
   <div class="actions">
     <input name="commit" type="submit" value="Add Recipe" />
@@ -48,168 +75,12 @@
 
 <br/>
 
-
-<button type="button" 
-onclick="getTitle('http://smittenkitchen.com/2012/01/apple-sharlotka/')">Display Recipe</button>
-
-<button type="button" 
-onclick="getTitle('abc')">Get Title</button>
-
 <button type="button" 
 onclick="getAll()">Get All</button>
 
+<button type="button"
+onclick="testExternalJS()">External JS</button>
 
-<script type="text/javascript">
-
-var recipeTitle="unknown";
-var recipePicture="";
-
-function getAll(){
-	getTitle();
-	console.log("getAll()..." + recipeTitle);
-}
-
-function getTitle(){
-	var url = document.getElementById('recipe_url').value;
-	var yql_url = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22" + encodeURIComponent(url) + "%22%20and%0A%20%20%20%20%20%20xpath%3D'%2F%2Ftitle'&format=json&callback=?";
-
-	$.getJSON(yql_url, getTitleCallback);
-}
-
-function getTitleCallback(json)
-{
-	console.log("getTitleCallback...");
-	  if (json && json.query && json.query.results && json.query.results.title) {
-		console.log("Returning title...");
-		recipeTitle = json.query.results.title;
-	  }
-	  else{
-		console.log("Title not found.");
-		recipeTitle = "Please enter title";
-	  }
-	  getPictures();
-}
-
-function getPictures(){
-	console.log("getPictures()...");
-	var url = document.getElementById('recipe_url').value;
-	var yql_url = "http://query.yahooapis.com/v1/public/yql?q=select%20src%20from%20html%20where%20url%3D%22" + encodeURIComponent(url) + "%22%20and%0A%20%20%20%20%20%20xpath%3D'%2F%2Fa%20%7C%20%2F%2Fimg'&format=json&callback=?";
-	$.getJSON(yql_url, getPicturesCallback);
-}
-
-function getPicturesCallback(json){
-	console.log("getPicturesCallback()...");
-	 if (json && json.query && json.query.results) {
-		console.log("Returning headers...");
-		console.log("..." + json.query.results.img[2].src);
-		findBestPicture(json.query.results.img);
-	  }
-	  else{
-		console.log("Headers not found.");
-		
-	  }
-	  assembleScrapedItems();
-	
-}
-
-function findBestPicture(image){
-	console.log("Finding best picture for: " + recipeTitle);
-	
-	//Remove non-letters and numbers from the title.
-	var regexNonAlpha = /[\W|_]/g;
-	var cleanTitle = recipeTitle.replace(regexNonAlpha, " ").toLowerCase();
-	
-	//Put each word of the title into an array.  Avoid multiple spaces.
-	var titleElements = cleanTitle.split(/ +/g);
-	
-	//Loop through the json array of picture links.
-	var bestCandidateIndex  = 0;  //Default to the first image returned.
-	var bestCandidateScore = 0;
-	for(i in image)
-	{
-		//How many words from the title can be found in the image?
-		var currentImage = image[i].src.toLowerCase();
-		
-		//Extract the filename, remove the full path.
-		var regexFileNameOnly = /(.*)[\/\\]([^\/\\]+\.\w+)$/;
-		var currentFileName = currentImage.match(regexFileNameOnly)[2];
-		
-		console.log("Examining: " + i + " " + image[36].src + " " + currentFileName);
-		var score = 0;
-		for(j in titleElements)
-		{
-			var currentElement = titleElements[j];
-			var elementFoundAt = currentFileName.indexOf(currentElement, 0);
-			if(elementFoundAt >= 0)
-			{
-				score++;
-			}
-		}
-		
-		//Better score?
-		if(score > bestCandidateScore)
-		{
-			bestCandidateScore = score;
-			bestCandidateIndex = i;
-		}
-	}
-	
-	console.log("Best candidate index: " + bestCandidateIndex + ". Score: " + bestCandidateScore);
-	recipePicture = image[bestCandidateIndex].src;
-}
-
-function assembleScrapedItems(){
-	console.log("Assembling scraped items");
-	document.getElementById("recipeImage").src  = recipePicture;
-	//document.getElementById("demo").innerHTML  = recipeTitle;
-}
-
-function doAjax1(url){
-    if(url.match('^http'))
-	{
-		alert("Getting JSON");
-		var querySQLPart = "http://query.yahooapis.com/v1/public/yql?"+
-                "q=select * from html where url = '";
-		var queryExtra="'&format=xml&callback=?";
-		var query = "http://query.yahooapis.com/v1/public/yql?"+
-                "q=select%20*%20from%20html%20where%20url%3D%22"+
-                encodeURIComponent(url)+
-                "%22&format=xml'&callback=?";
-		alert(query);
-		 $.getJSON(query,
-        function(data){
-		  alert("Callback...");
-          if(data.results[0]){
-            var data = filterData(data.results[0]);
-            alert(data);
-			document.getElementById("demo").innerHTML = data;
-          } else {
-            var errormsg = '<p>Error: could not load the page.</p>';
-            container.html(errormsg);
-          }
-        }
-      );
-    } else {
-      $('#target').load(url);
-    }
-  }
-  
- function findRecipeTitle(data){
-	var titleStart = data.search("Spanish");
-	var titleEnd = data.search("Onions");
-	alert(titleStart + " " + titleEnd);
- }
- 
- function filterData(data){
-    data = data.replace(/<?\/body[^>]*>/g,'');
-    data = data.replace(/[\r|\n]+/g,'');
-    data = data.replace(/<--[\S\s]*?-->/g,'');
-    data = data.replace(/<noscript[^>]*>[\S\s]*?<\/noscript>/g,'');
-    data = data.replace(/<script[^>]*>[\S\s]*?<\/script>/g,'');
-    data = data.replace(/<script.*\/>/,'');
-    return data;
-  }
- </script>
-
+<%= javascript_include_tag "application" %>
 
 <%= link_to 'New Recipe', new_recipe_path %>

@@ -5,7 +5,8 @@ class RecipesController < ApplicationController
     @recipes = Recipe.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      
+	  format.html # index.html.erb
       format.json { render json: @recipes }
     end
   end
@@ -44,8 +45,15 @@ class RecipesController < ApplicationController
 
     respond_to do |format|
       if @recipe.save
-        format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
-        format.json { render json: @recipe, status: :created, location: @recipe }
+		logger.debug "Debug: recipe saved."
+		
+		#MDR: Customized routing to stay on the index page after saving a new
+		#	recipe.
+		format.html { redirect_to recipes_url }
+		format.json { render json: @recipes } 
+		
+		#format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
+        #format.json { render json: @recipe, status: :created, location: @recipe }
       else
         format.html { render action: "new" }
         format.json { render json: @recipe.errors, status: :unprocessable_entity }
