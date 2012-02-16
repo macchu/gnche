@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  title: MyString
+  day: 2012-02-16
+  meal: MyString
+  menu_id: 1
+  user_id: 1
+
+two:
+  title: MyString
+  day: 2012-02-16
+  meal: MyString
+  menu_id: 1
+  user_id: 1
