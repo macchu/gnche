@@ -1,16 +1,26 @@
 <h1>Listing menus</h1>
 
-
 <table>
   <tr>
     <th>Title</th>
-    <th>Day</th>
+    <th>Meal</th>
+    <th>Date of meal</th>
+    <th>User</th>
+    <th>Date created</th>
+    <th>Date updated</th>
+    <th></th>
+    <th></th>
+    <th></th>
   </tr>
 
 <% @menus.each do |menu| %>
   <tr>
     <td><%= menu.title %></td>
-    <td><%= menu.day %></td>
+    <td><%= menu.meal %></td>
+    <td><%= menu.date_of_meal %></td>
+    <td><%= menu.user_id %></td>
+    <td><%= menu.date_created %></td>
+    <td><%= menu.date_updated %></td>
     <td><%= link_to 'Show', menu %></td>
     <td><%= link_to 'Edit', edit_menu_path(menu) %></td>
     <td><%= link_to 'Destroy', menu, confirm: 'Are you sure?', method: :delete %></td>
@@ -18,3 +28,6 @@
 <% end %>
 </table>
 
+<br />
+
+<%= link_to 'New Menu', new_menu_path %>

@@ -1,10 +1,10 @@
-<%= form_for(@recipe) do |f| %>
-  <% if @recipe.errors.any? %>
+<%= form_for(@menu) do |f| %>
+  <% if @menu.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@recipe.errors.count, "error") %> prohibited this recipe from being saved:</h2>
+      <h2><%= pluralize(@menu.errors.count, "error") %> prohibited this menu from being saved:</h2>
 
       <ul>
-      <% @recipe.errors.full_messages.each do |msg| %>
+      <% @menu.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
       <% end %>
       </ul>
@@ -16,20 +16,24 @@
     <%= f.text_field :title %>
   </div>
   <div class="field">
-    <%= f.label :url %><br />
-    <%= f.text_field :url %>
+    <%= f.label :meal %><br />
+    <%= f.text_field :meal %>
   </div>
   <div class="field">
-    <%= f.label :image %><br />
-    <%= f.text_field :image %>
+    <%= f.label :date_of_meal %><br />
+    <%= f.date_select :date_of_meal %>
   </div>
   <div class="field">
-    <%= f.label :dateAdded %><br />
-    <%= f.datetime_select :dateAdded %>
+    <%= f.label :user_id %><br />
+    <%= f.number_field :user_id %>
   </div>
   <div class="field">
-    <%= f.label :addedBy %><br />
-    <%= f.number_field :addedBy %>
+    <%= f.label :date_created %><br />
+    <%= f.datetime_select :date_created %>
+  </div>
+  <div class="field">
+    <%= f.label :date_updated %><br />
+    <%= f.datetime_select :date_updated %>
   </div>
   <div class="actions">
     <%= f.submit %>

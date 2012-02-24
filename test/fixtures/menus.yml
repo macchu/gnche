@@ -2,14 +2,16 @@
 
 one:
   title: MyString
-  day: 2012-02-16
   meal: MyString
-  menu_id: 1
+  date_of_meal: 2012-02-23
   user_id: 1
+  date_created: 2012-02-23 21:41:59
+  date_updated: 2012-02-23 21:41:59
 
 two:
   title: MyString
-  day: 2012-02-16
   meal: MyString
-  menu_id: 1
+  date_of_meal: 2012-02-23
   user_id: 1
+  date_created: 2012-02-23 21:41:59
+  date_updated: 2012-02-23 21:41:59

@@ -1,32 +1,35 @@
 <p id="notice"><%= notice %></p>
 
-
-
 <p>
   <b>Title:</b>
-  <%= @recipe.title %>
+  <%= @menu.title %>
 </p>
 
 <p>
-  <b>Url:</b>
-  <%= @recipe.url %>
+  <b>Meal:</b>
+  <%= @menu.meal %>
 </p>
 
 <p>
-  <b>Image:</b>
-  <%= @recipe.image %>
+  <b>Date of meal:</b>
+  <%= @menu.date_of_meal %>
 </p>
 
 <p>
-  <b>Dateadded:</b>
-  <%= @recipe.dateAdded %>
+  <b>User:</b>
+  <%= @menu.user_id %>
 </p>
 
 <p>
-  <b>Addedby:</b>
-  <%= @recipe.addedBy %>
+  <b>Date created:</b>
+  <%= @menu.date_created %>
+</p>
+
+<p>
+  <b>Date updated:</b>
+  <%= @menu.date_updated %>
 </p>
 
 
-<%= link_to 'Edit', edit_recipe_path(@recipe) %> |
-<%= link_to 'Back', recipes_path %>
+<%= link_to 'Edit', edit_menu_path(@menu) %> |
+<%= link_to 'Back', menus_path %>
