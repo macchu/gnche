@@ -1,5 +1,20 @@
 <h1>New menu</h1>
 
+<div class="carousel default">
+    <button class="prev">&lt;&lt;</button>
+    <div class="jCarouselLite" style="visibility: visible; overflow-x: hidden; overflow-y: hidden; position: relative; z-index: 2; left: 0px; width: 510px; ">
+        <ul style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; position: relative; list-style-type: none; z-index: 1; width: 2890px; left: -340px; ">
+			<% @recipes.each do |recipe| %>
+				<li style="overflow-x: hidden; overflow-y: hidden; float: left; width: 170px; height: 145px; "> <img src="<%= recipe.image %>" width="150" height="118"></li>
+			<% end %>
+		</ul>
+    </div>
+    <button class="next">&gt;&gt;</button>
+     
+<div class="clear"></div></div>
+
 <%= render 'form' %>
 
 <%= link_to 'Back', menus_path %>
+
+<%= javascript_include_tag "application" %>

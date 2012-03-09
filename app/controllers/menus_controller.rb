@@ -24,6 +24,7 @@ class MenusController < ApplicationController
   # GET /menus/new
   # GET /menus/new.json
   def new
+	@recipes = Recipe.all
     @menu = Menu.new
 
     respond_to do |format|
