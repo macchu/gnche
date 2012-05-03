@@ -1,20 +1,64 @@
 <h1>New menu</h1>
-
+<%= render "menu_id" %>
 <div class="carousel default">
     <button class="prev">&lt;&lt;</button>
     <div class="jCarouselLite" style="visibility: visible; overflow-x: hidden; overflow-y: hidden; position: relative; z-index: 2; left: 0px; width: 510px; ">
         <ul style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; position: relative; list-style-type: none; z-index: 1; width: 2890px; left: -340px; ">
 			<% @recipes.each do |recipe| %>
-				<li style="overflow-x: hidden; overflow-y: hidden; float: left; width: 170px; height: 145px; "> <img src="<%= recipe.image %>" width="150" height="118"></li>
+					<li style="overflow-x: hidden; overflow-y: hidden; float: left; width: 170px; height: 145px; "> 
+						<img id="<%= recipe.id %>" class="draggableRecipe" src="<%= recipe.image %>" alt="<%= recipe.title %>" width="150" height="118">
+					</li>
 			<% end %>
 		</ul>
     </div>
     <button class="next">&gt;&gt;</button>
-     
-<div class="clear"></div></div>
+</div>
 
-<%= render 'form' %>
+<div id="newMenu1" class="menuDropBox">
+
+</div>	
+
+<div id="dropContent" class="hidden_form" style="display: visible">
+		
+	<%= render 'form' %>
+		
+</div>
+
 
 <%= link_to 'Back', menus_path %>
 
-<%= javascript_include_tag "application" %>
+<script>
+	//Create a hash linking recipe id to recipe titles.
+	var titles = new Object();
+	<% @recipes.each do |recipe| %>
+		titles["<%= recipe.id %>"] = "<%= recipe.title %>";
+	<% end %>
+	
+	console.log(<%= @menu.id %>);
+	
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+	//Without this function, submitForm() sends the form data as HTML.  This catches the data and
+	//submits via AJAX.  http://stackoverflow.com/questions/7467518/ajax-rails-check-box-using-javascript-submit
+	$('#new_menu_item').submit(function(){
+	  $.ajax({
+		type: this.method,
+		url: this.action,
+		data: $(this).serialize(),
+		success: function(){
+		  console.log("ajax submit():  successful!");
+		}
+	  });
+	  return false;
+	});
+});
+</script>
+<%#= javascript_include_tag :defaults %>
+<%#= javascript_include_tag "application", "menus/drag-drop-custom", "menus/jcarousellite_1.0.1", "menus/menus" %>
+<%= javascript_include_tag "menus/drag-drop-custom", "menus/jcarousellite_1.0.1", "menus/menus" %>
+
+
+

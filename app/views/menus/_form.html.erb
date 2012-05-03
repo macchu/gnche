@@ -1,41 +1,27 @@
-<%= form_for(@menu) do |f| %>
-  <% if @menu.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@menu.errors.count, "error") %> prohibited this menu from being saved:</h2>
-
-      <ul>
-      <% @menu.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :title %><br />
-    <%= f.text_field :title %>
-  </div>
-  <div class="field">
-    <%= f.label :meal %><br />
-    <%= f.text_field :meal %>
-  </div>
-  <div class="field">
-    <%= f.label :date_of_meal %><br />
-    <%= f.date_select :date_of_meal %>
-  </div>
-  <div class="field">
-    <%= f.label :user_id %><br />
-    <%= f.number_field :user_id %>
-  </div>
-  <div class="field">
-    <%= f.label :date_created %><br />
-    <%= f.datetime_select :date_created %>
-  </div>
-  <div class="field">
-    <%= f.label :date_updated %><br />
-    <%= f.datetime_select :date_updated %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+<%= form_for(@menu, :remote => true) do |f| %>
+	<div class="field">
+		<%= f.label :title, 'Title' %>
+		<%= f.text_field :title, :value => 'New menu', :onchange => 'submit_menu_title()'  %>
+		<%= f.hidden_field  :id, :class => 'menu_id_field' %>
+	</div>
+	<div class="actions">			
+		<%= f.submit "Create", :id=>'submit_menu' %>
+	</div>
 <% end %>
+
+<%= form_for(@menu_item, :remote => true, :url => { :controller => "menus", :action => "create" }) do |f| %>
+				
+	<# Data for menu items %>
+	<div class="field">
+		<%= f.label :menu_id, 'Menu ID'%>
+		<%= f.text_field :menu_id, :class => 'menu_id_field', :value => @menu.id%>
+	</div>
+	<div class="field">
+		<%= f.label :recipe_id, 'Recipe ID' %>
+		<%= f.text_field  :recipe_id %>
+	</div>		
+	<div class="actions">			
+		<%= f.submit "Create", :id=>'submit_menu_item' %>
+	</div>
+<% end %>
+

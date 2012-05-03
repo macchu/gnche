@@ -1,4 +1,5 @@
 Gnche::Application.routes.draw do
+
   resources :recipes
   resources :menus
   resources :menu_items
